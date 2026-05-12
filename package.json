@@ -1,0 +1,13 @@
+{
+  "name": "sol-cement-system",
+  "version": "1.0.0",
+  "description": "SOL CEMENT - Construction Materials Management System",
+  "scripts": {
+    "build:backend": "cd backend && npm install --production",
+    "build:frontend": "cd frontend && npm install && npm run build",
+    "build:all": "npm run build:backend && npm run build:frontend"
+  },
+  "keywords": ["construction", "materials", "management", "inventory", "sales"],
+  "author": "AMINU YAKUBU ENTERPRISE",
+  "license": "MIT"
+}
