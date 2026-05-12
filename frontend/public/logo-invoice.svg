@@ -1,0 +1,25 @@
+<svg width="180" height="50" viewBox="0 0 180 50" xmlns="http://www.w3.org/2000/svg">
+  <!-- Company name -->
+  <text x="10" y="25" font-family="Arial, sans-serif" font-size="16" font-weight="bold" 
+        text-anchor="start" fill="#1e40af">SOL CEMENT</text>
+  
+  <!-- Company name extended -->
+  <text x="10" y="42" font-family="Arial, sans-serif" font-size="10" 
+        text-anchor="start" fill="#6b7280">AMINU YAKUBU ENTERPRISE</text>
+  
+  <!-- Tagline -->
+  <text x="10" y="15" font-family="Arial, sans-serif" font-size="8" font-style="italic"
+        text-anchor="start" fill="#fbbf24">Build The Future</text>
+  
+  <!-- Decorative cement bag -->
+  <g transform="translate(140, 8)">
+    <!-- Bag shape -->
+    <path d="M4 4 L4 14 Q4 15 5 15 L21 15 Q22 15 22 14 L22 4 Q22 3 21 3 L5 3 Q4 3 4 4 Z" 
+          fill="#fbbf24" stroke="#f59e0b" stroke-width="0.5"/>
+    <!-- Bag top -->
+    <rect x="3" y="2" width="20" height="2" rx="1" fill="#f59e0b"/>
+    <!-- SOL text -->
+    <text x="13" y="10" font-family="Arial, sans-serif" font-size="5" font-weight="bold" 
+          text-anchor="middle" fill="#1e40af">SOL</text>
+  </g>
+</svg>

@@ -1,0 +1,476 @@
+[
+  {
+    "id": "ajv@6.14.0",
+    "name": "ajv",
+    "version": "6.14.0",
+    "size": 202714,
+    "unpackedSize": 938185,
+    "shasum": "fd067713e228210636ebb08c60bd3765d6dbe73a",
+    "integrity": "sha512-IWrosm/yrn43eiKqkfkHis7QioDleaXQHdDVPKg0FSwwd/DuvyX79TZnFOnYpB7dcsFAMmtFztZuXPDvSePkFw==",
+    "filename": "ajv-6.14.0.tgz",
+    "files": [
+      {
+        "path": ".tonic_example.js",
+        "size": 439,
+        "mode": 420
+      },
+      {
+        "path": "LICENSE",
+        "size": 1090,
+        "mode": 420
+      },
+      {
+        "path": "README.md",
+        "size": 86876,
+        "mode": 420
+      },
+      {
+        "path": "dist/ajv.bundle.js",
+        "size": 273216,
+        "mode": 420
+      },
+      {
+        "path": "dist/ajv.min.js",
+        "size": 119444,
+        "mode": 420
+      },
+      {
+        "path": "dist/ajv.min.js.map",
+        "size": 149045,
+        "mode": 420
+      },
+      {
+        "path": "lib/ajv.d.ts",
+        "size": 13331,
+        "mode": 420
+      },
+      {
+        "path": "lib/ajv.js",
+        "size": 15837,
+        "mode": 420
+      },
+      {
+        "path": "lib/cache.js",
+        "size": 409,
+        "mode": 420
+      },
+      {
+        "path": "lib/compile/async.js",
+        "size": 2644,
+        "mode": 420
+      },
+      {
+        "path": "lib/compile/equal.js",
+        "size": 176,
+        "mode": 420
+      },
+      {
+        "path": "lib/compile/error_classes.js",
+        "size": 828,
+        "mode": 420
+      },
+      {
+        "path": "lib/compile/formats.js",
+        "size": 12081,
+        "mode": 420
+      },
+      {
+        "path": "lib/compile/index.js",
+        "size": 10807,
+        "mode": 420
+      },
+      {
+        "path": "lib/compile/resolve.js",
+        "size": 7847,
+        "mode": 420
+      },
+      {
+        "path": "lib/compile/rules.js",
+        "size": 2021,
+        "mode": 420
+      },
+      {
+        "path": "lib/compile/schema_obj.js",
+        "size": 133,
+        "mode": 420
+      },
+      {
+        "path": "lib/compile/ucs2length.js",
+        "size": 558,
+        "mode": 420
+      },
+      {
+        "path": "lib/compile/util.js",
+        "size": 6974,
+        "mode": 420
+      },
+      {
+        "path": "lib/data.js",
+        "size": 1048,
+        "mode": 420
+      },
+      {
+        "path": "lib/definition_schema.js",
+        "size": 872,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/_limit.jst",
+        "size": 3932,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/_limitItems.jst",
+        "size": 353,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/_limitLength.jst",
+        "size": 358,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/_limitProperties.jst",
+        "size": 376,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/allOf.jst",
+        "size": 609,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/anyOf.jst",
+        "size": 921,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/coerce.def",
+        "size": 1979,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/comment.jst",
+        "size": 322,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/const.jst",
+        "size": 280,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/contains.jst",
+        "size": 1188,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/custom.jst",
+        "size": 4945,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/defaults.def",
+        "size": 1285,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/definitions.def",
+        "size": 4022,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/dependencies.jst",
+        "size": 1868,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/enum.jst",
+        "size": 552,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/errors.def",
+        "size": 8282,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/format.jst",
+        "size": 3136,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/if.jst",
+        "size": 1618,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/items.jst",
+        "size": 2610,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/missing.def",
+        "size": 1194,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/multipleOf.jst",
+        "size": 644,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/not.jst",
+        "size": 861,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/oneOf.jst",
+        "size": 1150,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/pattern.jst",
+        "size": 576,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/properties.jst",
+        "size": 7725,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/propertyNames.jst",
+        "size": 1284,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/ref.jst",
+        "size": 2454,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/required.jst",
+        "size": 2868,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/uniqueItems.jst",
+        "size": 1696,
+        "mode": 420
+      },
+      {
+        "path": "lib/dot/validate.jst",
+        "size": 7717,
+        "mode": 420
+      },
+      {
+        "path": "lib/dotjs/_limit.js",
+        "size": 7395,
+        "mode": 420
+      },
+      {
+        "path": "lib/dotjs/_limitItems.js",
+        "size": 2704,
+        "mode": 420
+      },
+      {
+        "path": "lib/dotjs/_limitLength.js",
+        "size": 2825,
+        "mode": 420
+      },
+      {
+        "path": "lib/dotjs/_limitProperties.js",
+        "size": 2742,
+        "mode": 420
+      },
+      {
+        "path": "lib/dotjs/allOf.js",
+        "size": 1349,
+        "mode": 420
+      },
+      {
+        "path": "lib/dotjs/anyOf.js",
+        "size": 2925,
+        "mode": 420
+      },
+      {
+        "path": "lib/dotjs/comment.js",
+        "size": 573,
+        "mode": 420
+      },
+      {
+        "path": "lib/dotjs/const.js",
+        "size": 2113,
+        "mode": 420
+      },
+      {
+        "path": "lib/dotjs/contains.js",
+        "size": 3370,
+        "mode": 420
+      },
+      {
+        "path": "lib/dotjs/custom.js",
+        "size": 9770,
+        "mode": 420
+      },
+      {
+        "path": "lib/dotjs/dependencies.js",
+        "size": 7720,
+        "mode": 420
+      },
+      {
+        "path": "lib/dotjs/enum.js",
+        "size": 2586,
+        "mode": 420
+      },
+      {
+        "path": "lib/dotjs/format.js",
+        "size": 5565,
+        "mode": 420
+      },
+      {
+        "path": "lib/dotjs/if.js",
+        "size": 4159,
+        "mode": 420
+      },
+      {
+        "path": "lib/dotjs/index.js",
+        "size": 1100,
+        "mode": 420
+      },
+      {
+        "path": "lib/dotjs/items.js",
+        "size": 6214,
+        "mode": 420
+      },
+      {
+        "path": "lib/dotjs/multipleOf.js",
+        "size": 2807,
+        "mode": 420
+      },
+      {
+        "path": "lib/dotjs/not.js",
+        "size": 3460,
+        "mode": 420
+      },
+      {
+        "path": "lib/dotjs/oneOf.js",
+        "size": 3188,
+        "mode": 420
+      },
+      {
+        "path": "lib/dotjs/pattern.js",
+        "size": 3025,
+        "mode": 420
+      },
+      {
+        "path": "lib/dotjs/properties.js",
+        "size": 15121,
+        "mode": 420
+      },
+      {
+        "path": "lib/dotjs/propertyNames.js",
+        "size": 3607,
+        "mode": 420
+      },
+      {
+        "path": "lib/dotjs/README.md",
+        "size": 149,
+        "mode": 420
+      },
+      {
+        "path": "lib/dotjs/ref.js",
+        "size": 4711,
+        "mode": 420
+      },
+      {
+        "path": "lib/dotjs/required.js",
+        "size": 12395,
+        "mode": 420
+      },
+      {
+        "path": "lib/dotjs/uniqueItems.js",
+        "size": 3694,
+        "mode": 420
+      },
+      {
+        "path": "lib/dotjs/validate.js",
+        "size": 20018,
+        "mode": 420
+      },
+      {
+        "path": "lib/keyword.js",
+        "size": 3911,
+        "mode": 420
+      },
+      {
+        "path": "lib/refs/data.json",
+        "size": 551,
+        "mode": 420
+      },
+      {
+        "path": "lib/refs/json-schema-draft-04.json",
+        "size": 4357,
+        "mode": 420
+      },
+      {
+        "path": "lib/refs/json-schema-draft-06.json",
+        "size": 4445,
+        "mode": 420
+      },
+      {
+        "path": "lib/refs/json-schema-draft-07.json",
+        "size": 4879,
+        "mode": 420
+      },
+      {
+        "path": "lib/refs/json-schema-secure.json",
+        "size": 2572,
+        "mode": 420
+      },
+      {
+        "path": "package.json",
+        "size": 3142,
+        "mode": 420
+      },
+      {
+        "path": "scripts/.eslintrc.yml",
+        "size": 62,
+        "mode": 420
+      },
+      {
+        "path": "scripts/bundle.js",
+        "size": 1795,
+        "mode": 420
+      },
+      {
+        "path": "scripts/compile-dots.js",
+        "size": 2431,
+        "mode": 420
+      },
+      {
+        "path": "scripts/info",
+        "size": 289,
+        "mode": 493
+      },
+      {
+        "path": "scripts/prepare-tests",
+        "size": 269,
+        "mode": 493
+      },
+      {
+        "path": "scripts/publish-built-version",
+        "size": 842,
+        "mode": 493
+      },
+      {
+        "path": "scripts/travis-gh-pages",
+        "size": 874,
+        "mode": 493
+      }
+    ],
+    "entryCount": 92,
+    "bundled": []
+  }
+]
