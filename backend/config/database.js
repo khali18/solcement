@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGODB_URI, {
-      // These options are no longer needed in Mongoose 6+, but kept for clarity
-      // useNewUrlParser: true,
-      // useUnifiedTopology: true,
+      connectTimeoutMS: 10000, // 10 seconds
+      socketTimeoutMS: 45000,  // 45 seconds
+      serverSelectionTimeoutMS: 10000, // 10 seconds
     });
 
     console.log(`MongoDB Connected: ${conn.connection.host}`);
