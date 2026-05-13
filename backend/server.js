@@ -23,6 +23,18 @@ connectDB();
 
 const app = express();
 
+// Middleware to ensure DB is connected
+app.use((req, res, next) => {
+  const mongoose = require('mongoose');
+  if (mongoose.connection.readyState !== 1 && req.path !== '/api/health') {
+    return res.status(503).json({
+      status: 'error',
+      message: 'Database is still connecting. Please try again in a few seconds.'
+    });
+  }
+  next();
+});
+
 // 1. CORS Configuration (Permissive for Vercel)
 app.use(cors({
   origin: true,
