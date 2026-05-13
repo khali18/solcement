@@ -36,11 +36,30 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// CORS
-app.use(cors({
-  origin: process.env.CLIENT_URL || true,
-  credentials: true
-}));
+// CORS Configuration
+const corsOptions = {
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      process.env.CLIENT_URL,
+      'https://solcement-p7aj.vercel.app',
+      'http://localhost:3000',
+      'http://localhost:3001'
+    ];
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin || allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Handle preflight requests for all routes
 
 // Body parser
 app.use(express.json({ limit: '10mb' }));
