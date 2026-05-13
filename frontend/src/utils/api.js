@@ -110,5 +110,6 @@ export const apiHelpers = {
   syncCustomerPayments: () => api.post('/api/customer-payments/sync'),
   getCustomerPayment: (id) => api.get(`/api/customer-payments/${id}`),
   getCustomerOutstandingSales: (customerId) => api.get(`/api/customer-payments/outstanding/${customerId}`),
-  getCustomerPaymentHistory: (customerId, params) => api.get(`/api/customer-payments/history/${customerId}`, { params })
+  getCustomerPaymentHistory: (customerId, params) => api.get(`/api/customer-payments/history/${customerId}`, { params }),
+  downloadPaymentReceipt: (id) => api.get(`/api/customer-payments/${id}/receipt`, { responseType: 'blob' })
 };

@@ -1,5 +1,6 @@
 const { Customer, CustomerPayment, Sale, Transaction } = require('../models');
 const { asyncHandler, AppError } = require('../middleware/errorHandler');
+const { generatePaymentReceiptPDF } = require('../utils/paymentReceiptTemplate');
 
 // @desc    Get all customer payments
 // @route   GET /api/customer-payments
@@ -13,10 +14,16 @@ const getCustomerPayments = asyncHandler(async (req, res) => {
   }
 
   if (search) {
-    // Search by receipt number or customer name (requires population/lookup or search by receipt)
+    // Find customers matching search for name search
+    const matchingCustomers = await Customer.find({
+      name: { $regex: search, $options: 'i' }
+    }).select('_id');
+    const customerIds = matchingCustomers.map(c => c._id);
+
     filter.$or = [
       { receiptNumber: { $regex: search, $options: 'i' } },
-      { referenceNumber: { $regex: search, $options: 'i' } }
+      { referenceNumber: { $regex: search, $options: 'i' } },
+      { customer: { $in: customerIds } }
     ];
   }
   
@@ -441,6 +448,24 @@ const syncExistingPayments = asyncHandler(async (req, res) => {
   });
 });
 
+// @desc    Generate payment receipt PDF
+// @route   GET /api/customer-payments/:id/receipt
+// @access  Private
+const generatePaymentReceipt = asyncHandler(async (req, res) => {
+  const payment = await CustomerPayment.findById(req.params.id)
+    .populate('customer')
+    .populate('appliedToSales.sale');
+
+  if (!payment) {
+    throw new AppError('Payment not found', 404);
+  }
+
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', `attachment; filename=receipt-${payment.receiptNumber}.pdf`);
+
+  generatePaymentReceiptPDF(payment, res);
+});
+
 module.exports = {
   getCustomerPayments,
   createCustomerPayment,
@@ -449,5 +474,6 @@ module.exports = {
   getCustomerPaymentHistory,
   updateCustomerPayment,
   deleteCustomerPayment,
-  syncExistingPayments
+  syncExistingPayments,
+  generatePaymentReceipt
 };

@@ -14,7 +14,10 @@ import {
   Filter,
   TrendingUp,
   Trash2,
-  Edit2
+  Edit2,
+  FileText,
+  Download,
+  Check
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -35,6 +38,8 @@ const CustomerPayments = () => {
     notes: '',
     appliedToSales: []
   });
+  const [selectedSales, setSelectedSales] = useState({}); // { saleId: amount }
+  const [printing, setPrinting] = useState(null);
 
   useEffect(() => {
     if (customerId) {
@@ -66,6 +71,14 @@ const CustomerPayments = () => {
       return;
     }
 
+    // Prepare appliedToSales from selectedSales
+    const appliedToSales = Object.entries(selectedSales)
+      .filter(([_, amount]) => amount > 0)
+      .map(([saleId, amount]) => ({
+        sale: saleId,
+        amountApplied: Number(amount)
+      }));
+
     try {
       const paymentData = {
         customer: customerId,
@@ -73,10 +86,11 @@ const CustomerPayments = () => {
         paymentMethod: formData.paymentMethod,
         referenceNumber: formData.referenceNumber,
         notes: formData.notes,
-        appliedToSales: formData.appliedToSales
+        appliedToSales: appliedToSales
       };
 
       await apiHelpers.createCustomerPayment(paymentData);
+      toast.success('Payment recorded successfully');
       
       // Reset form
       setFormData({
@@ -86,7 +100,9 @@ const CustomerPayments = () => {
         notes: '',
         appliedToSales: []
       });
+      setSelectedSales({});
       setShowPaymentForm(false);
+      setActiveTab('payments');
       
       // Refresh data
       fetchData();
@@ -94,6 +110,62 @@ const CustomerPayments = () => {
       console.error('Error creating payment:', error);
       toast.error('Error creating payment');
     }
+  };
+
+  const handlePrintReceipt = async (paymentId) => {
+    try {
+      setPrinting(paymentId);
+      const response = await apiHelpers.downloadPaymentReceipt(paymentId);
+      
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `receipt-${paymentId}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Error downloading receipt:', error);
+      toast.error('Failed to download receipt');
+    } finally {
+      setPrinting(null);
+    }
+  };
+
+  const toggleSaleSelection = (saleId, amountDue) => {
+    setSelectedSales(prev => {
+      if (prev[saleId]) {
+        const { [saleId]: removed, ...rest } = prev;
+        return rest;
+      } else {
+        return { ...prev, [saleId]: amountDue };
+      }
+    });
+  };
+
+  const handleSaleAmountChange = (saleId, amount) => {
+    setSelectedSales(prev => ({
+      ...prev,
+      [saleId]: amount
+    }));
+  };
+
+  const autoDistributeAmount = (totalAmount) => {
+    const amount = Number(totalAmount);
+    if (isNaN(amount) || amount <= 0) return;
+
+    let remaining = amount;
+    const newSelection = {};
+    
+    // Distribute to outstanding sales FIFO
+    [...outstandingSales].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)).forEach(sale => {
+      if (remaining <= 0) return;
+      const applied = Math.min(sale.amountDue, remaining);
+      newSelection[sale._id] = applied;
+      remaining -= applied;
+    });
+
+    setSelectedSales(newSelection);
   };
 
   const handleDelete = async (paymentId) => {
@@ -321,6 +393,18 @@ const CustomerPayments = () => {
                         <td className="px-4 py-3 text-center">
                           <div className="flex items-center justify-center space-x-2">
                             <button
+                              onClick={() => handlePrintReceipt(payment._id)}
+                              disabled={printing === payment._id}
+                              className="p-1 text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                              title="Print Receipt"
+                            >
+                              {printing === payment._id ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                              ) : (
+                                <FileText className="w-4 h-4" />
+                              )}
+                            </button>
+                            <button
                               onClick={() => handleDelete(payment._id)}
                               className="p-1 text-rose-600 hover:bg-rose-50 rounded transition-colors"
                               title="Delete Payment"
@@ -351,7 +435,10 @@ const CustomerPayments = () => {
                     type="number"
                     step="0.01"
                     value={formData.amount}
-                    onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                    onChange={(e) => {
+                      setFormData({ ...formData, amount: e.target.value });
+                      autoDistributeAmount(e.target.value);
+                    }}
                     className="input"
                     placeholder="Enter payment amount"
                     required
@@ -383,6 +470,72 @@ const CustomerPayments = () => {
                   className="input"
                   placeholder="Check number, transaction ID, etc."
                 />
+              </div>
+
+              {/* Manual Sale Application */}
+              <div className="space-y-3">
+                <label className="label">Apply Payment to Specific Sales (Optional)</label>
+                <p className="text-xs text-slate-500 mb-2">By default, payment is applied to oldest sales first (FIFO).</p>
+                <div className="border border-slate-200 rounded-lg overflow-hidden">
+                  <table className="w-full text-sm">
+                    <thead className="bg-slate-50">
+                      <tr>
+                        <th className="px-3 py-2 text-left">Apply?</th>
+                        <th className="px-3 py-2 text-left">Invoice</th>
+                        <th className="px-3 py-2 text-right">Outstanding</th>
+                        <th className="px-3 py-2 text-right">Amount to Apply</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-200">
+                      {outstandingSales.length === 0 ? (
+                        <tr>
+                          <td colSpan="4" className="px-3 py-4 text-center text-slate-500 italic">
+                            No outstanding sales to apply to
+                          </td>
+                        </tr>
+                      ) : (
+                        outstandingSales.map(sale => (
+                          <tr key={sale._id} className={selectedSales[sale._id] ? 'bg-emerald-50' : ''}>
+                            <td className="px-3 py-2">
+                              <input
+                                type="checkbox"
+                                checked={!!selectedSales[sale._id]}
+                                onChange={() => toggleSaleSelection(sale._id, sale.amountDue)}
+                                className="rounded text-emerald-600 focus:ring-emerald-500"
+                              />
+                            </td>
+                            <td className="px-3 py-2 font-medium">{sale.invoiceNumber}</td>
+                            <td className="px-3 py-2 text-right">{formatCurrency(sale.amountDue)}</td>
+                            <td className="px-3 py-2 text-right">
+                              {selectedSales[sale._id] ? (
+                                <input
+                                  type="number"
+                                  step="0.01"
+                                  max={sale.amountDue}
+                                  value={selectedSales[sale._id]}
+                                  onChange={(e) => handleSaleAmountChange(sale._id, e.target.value)}
+                                  className="input py-1 px-2 text-right w-24 text-xs"
+                                />
+                              ) : (
+                                <span className="text-slate-400">-</span>
+                              )}
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                    {Object.keys(selectedSales).length > 0 && (
+                      <tfoot className="bg-slate-50 font-medium">
+                        <tr>
+                          <td colSpan="3" className="px-3 py-2 text-right">Total Applied:</td>
+                          <td className="px-3 py-2 text-right text-emerald-600">
+                            {formatCurrency(Object.values(selectedSales).reduce((a, b) => Number(a) + Number(b), 0))}
+                          </td>
+                        </tr>
+                      </tfoot>
+                    )}
+                  </table>
+                </div>
               </div>
 
               <div>

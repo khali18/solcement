@@ -44,8 +44,7 @@ const Layout = () => {
     ...(hasRole('admin') ? [
       { name: 'Users', href: '/users', icon: UserCog },
       { name: 'Customer Payments', href: '/customers/payments', icon: CreditCard }
-    ] : []),
-    { name: 'Settings', href: '/settings', icon: Settings }
+    ] : [])
   ];
 
   const getRoleBadgeColor = (role) => {
@@ -71,7 +70,7 @@ const Layout = () => {
 
       {/* Sidebar */}
       <aside 
-        className={`fixed top-0 left-0 z-50 h-full w-72 bg-gradient-to-b from-slate-900 to-slate-800 border-r border-slate-700 transform transition-all duration-300 ease-in-out lg:translate-x-0 shadow-2xl ${
+        className={`fixed top-0 left-0 z-50 h-full w-72 flex flex-col bg-gradient-to-b from-slate-900 to-slate-800 border-r border-slate-700 transform transition-all duration-300 ease-in-out lg:translate-x-0 shadow-2xl ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -165,13 +164,29 @@ const Layout = () => {
               </span>
             </div>
           </div>
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center justify-center px-4 py-3 text-sm font-medium text-red-400 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/30 rounded-xl transition-all duration-200 group"
-          >
-            <LogOut className="w-4 h-4 mr-2 group-hover:rotate-12 transition-transform duration-200" />
-            Sign Out
-          </button>
+          <div className="space-y-1">
+            <NavLink
+              to="/settings"
+              onClick={() => setSidebarOpen(false)}
+              className={({ isActive }) =>
+                `group flex items-center px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 ${
+                  isActive
+                    ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                    : 'text-slate-300 hover:bg-slate-700/50 hover:text-white'
+                }`
+              }
+            >
+              <Settings className="w-5 h-5 mr-3" />
+              Settings
+            </NavLink>
+            <button
+              onClick={handleLogout}
+              className="w-full group flex items-center px-4 py-2.5 text-sm font-medium text-slate-300 hover:bg-rose-500/10 hover:text-rose-400 rounded-xl transition-all duration-200"
+            >
+              <LogOut className="w-5 h-5 mr-3 group-hover:rotate-12 transition-transform duration-200" />
+              Logout
+            </button>
+          </div>
         </div>
       </aside>
 
@@ -213,24 +228,6 @@ const Layout = () => {
                 <button className="p-2 rounded-lg text-slate-500 hover:bg-slate-100 relative hover:shadow-sm transition-all">
                   <Bell className="w-5 h-5" />
                   <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full animate-pulse"></span>
-                </button>
-
-                {/* Settings Button */}
-                <button
-                  onClick={() => navigate('/settings')}
-                  className="flex items-center px-3 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border border-transparent hover:border-blue-200"
-                >
-                  <Settings className="w-4 h-4 mr-2" />
-                  <span className="hidden sm:inline">Settings</span>
-                </button>
-
-                {/* Logout Button */}
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-200"
-                >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  <span className="hidden sm:inline">Logout</span>
                 </button>
 
                 {/* User Avatar */}

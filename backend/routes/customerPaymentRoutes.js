@@ -9,7 +9,8 @@ const {
   deleteCustomerPayment,
   syncExistingPayments,
   getCustomerOutstandingSales,
-  getCustomerPaymentHistory
+  getCustomerPaymentHistory,
+  generatePaymentReceipt
 } = require('../controllers/customerPaymentController');
 
 // All routes are protected
@@ -35,6 +36,10 @@ router.route('/:id')
   .get(getCustomerPayment)
   .put(updateCustomerPayment)
   .delete(deleteCustomerPayment);
+
+// @route   GET /api/customer-payments/:id/receipt
+// @access  Private
+router.get('/:id/receipt', generatePaymentReceipt);
 
 // @route   POST /api/customer-payments/sync
 // @access  Private/Admin
