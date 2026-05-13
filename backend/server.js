@@ -39,9 +39,20 @@ const app = express();
 // Middleware to ensure DB is connected for every request
 app.use(async (req, res, next) => {
   const mongoose = require('mongoose');
+  
+  // If not connected, wait for connection
   if (mongoose.connection.readyState !== 1) {
-    isConnected = false;
-    await connectWithRetry();
+    console.log('Database not ready, attempting to connect/wait...');
+    try {
+      // Connect and await (mongoose.connect is idempotent if already connecting)
+      await connectDB();
+      console.log('Database connected successfully.');
+    } catch (err) {
+      return res.status(503).json({
+        status: 'error',
+        message: 'Database connection failed. Please try again in a moment.'
+      });
+    }
   }
   next();
 });
