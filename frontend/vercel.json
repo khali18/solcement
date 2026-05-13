@@ -14,8 +14,8 @@
       "dest": "/favicon.ico"
     },
     {
-      "src": "/logo(.*).png",
-      "dest": "/logo$1.png"
+      "src": "/logo(.*).(png|svg)",
+      "dest": "/logo$1.$2"
     },
     {
       "src": "/(.*)",
