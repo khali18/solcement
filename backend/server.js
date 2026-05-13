@@ -86,6 +86,19 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Server is running' });
 });
 
+// Debug endpoint (Masked)
+app.get('/api/debug', (req, res) => {
+  const uri = process.env.MONGODB_URI || 'NOT SET';
+  const maskedUri = uri.replace(/:([^@]+)@/, ':****@');
+  res.json({
+    nodeEnv: process.env.NODE_ENV,
+    vercel: process.env.VERCEL,
+    hasMongoUri: !!process.env.MONGODB_URI,
+    maskedUri,
+    jwtSecretSet: !!process.env.JWT_SECRET
+  });
+});
+
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({
