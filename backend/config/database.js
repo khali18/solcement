@@ -3,9 +3,10 @@ const mongoose = require('mongoose');
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGODB_URI, {
-      connectTimeoutMS: 10000, // 10 seconds
-      socketTimeoutMS: 45000,  // 45 seconds
-      serverSelectionTimeoutMS: 10000, // 10 seconds
+      connectTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
+      serverSelectionTimeoutMS: 10000,
+      family: 4, // Force IPv4
     });
 
     console.log(`MongoDB Connected: ${conn.connection.host}`);
