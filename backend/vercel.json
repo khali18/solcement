@@ -15,5 +15,11 @@
       "src": "/(.*)",
       "dest": "server.js"
     }
-  ]
+  ],
+  "env": {
+    "MONGODB_URI": "mongodb+srv://sheripha2_db_user:rbZiuXOblwvpC3ft@cluster0.rbZiuXOblwvpC3ft.mongodb.net/?appName=Cluster0",
+    "JWT_SECRET": "sol-cement-super-secret-jwt-key-2024-production",
+    "JWT_EXPIRE": "7d",
+    "NODE_ENV": "production"
+  }
 }
