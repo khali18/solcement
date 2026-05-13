@@ -18,10 +18,33 @@ const dashboardRoutes = require('./routes/dashboardRoutes');
 const loginAuditRoutes = require('./routes/loginAuditRoutes');
 const customerPaymentRoutes = require('./routes/customerPaymentRoutes');
 
-// Connect to database
-connectDB();
+// Database connection state
+let isConnected = false;
+
+const connectWithRetry = async () => {
+  if (isConnected) return;
+  try {
+    await connectDB();
+    isConnected = true;
+  } catch (err) {
+    console.error('DB Connection error, will retry...', err);
+  }
+};
+
+// Initial connection
+connectWithRetry();
 
 const app = express();
+
+// Middleware to ensure DB is connected for every request
+app.use(async (req, res, next) => {
+  const mongoose = require('mongoose');
+  if (mongoose.connection.readyState !== 1) {
+    isConnected = false;
+    await connectWithRetry();
+  }
+  next();
+});
 
 // 1. CORS Configuration (Permissive for Vercel)
 app.use(cors({
