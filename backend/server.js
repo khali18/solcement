@@ -23,8 +23,30 @@ connectDB();
 
 const app = express();
 
-// Security middleware
-app.use(helmet());
+// 1. CORS Configuration (Permissive and robust for Vercel)
+app.use(cors({
+  origin: true,
+  credentials: true,
+  methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization']
+}));
+
+// 2. Extra CORS bypass for Vercel (Handles preflight and explicit headers)
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  res.header('Access-Control-Allow-Origin', origin || '*');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  next();
+});
+
+// Security middleware (Temporarily disabled helmet for troubleshooting)
+// app.use(helmet());
 
 // Rate limiting
 const limiter = rateLimit({
@@ -35,25 +57,6 @@ const limiter = rateLimit({
   legacyHeaders: false,
 });
 app.use(limiter);
-
-// CORS Configuration (Permissive for troubleshooting)
-app.use(cors({
-  origin: true,
-  credentials: true
-}));
-
-// Manual CORS bypass for Vercel
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', req.headers.origin);
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin,X-Requested-With,Content-Type,Accept,Authorization');
-  
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-  next();
-});
 
 // Body parser
 app.use(express.json({ limit: '10mb' }));

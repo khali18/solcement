@@ -9,11 +9,23 @@
   "routes": [
     {
       "src": "/api/(.*)",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,OPTIONS",
+        "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept, Authorization",
+        "Access-Control-Allow-Credentials": "true"
+      },
       "dest": "server.js"
     },
     {
       "src": "/(.*)",
       "dest": "server.js"
     }
-  ]
+  ],
+  "env": {
+    "MONGODB_URI": "mongodb+srv://sheripha2_db_user:rbZiuXOblwvpC3ft@cluster0.rbZiuXOblwvpC3ft.mongodb.net/?appName=Cluster0",
+    "JWT_SECRET": "sol-cement-super-secret-jwt-key-2024-production",
+    "JWT_EXPIRE": "7d",
+    "NODE_ENV": "production"
+  }
 }

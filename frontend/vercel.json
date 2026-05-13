@@ -6,8 +6,23 @@
       "dest": "/static/$1"
     },
     {
+      "src": "/manifest.json",
+      "dest": "/manifest.json"
+    },
+    {
+      "src": "/favicon.ico",
+      "dest": "/favicon.ico"
+    },
+    {
+      "src": "/logo(.*).png",
+      "dest": "/logo$1.png"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ]
+  ],
+  "env": {
+    "REACT_APP_API_URL": "https://solcement.vercel.app"
+  }
 }
