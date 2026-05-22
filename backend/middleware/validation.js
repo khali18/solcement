@@ -91,7 +91,7 @@ const customerValidation = {
       .trim()
       .notEmpty().withMessage('Phone number is required'),
     body('email')
-      .optional()
+      .optional({ checkFalsy: true })
       .isEmail().withMessage('Invalid email format'),
     body('type')
       .optional()

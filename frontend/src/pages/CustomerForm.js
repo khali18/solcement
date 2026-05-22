@@ -25,6 +25,7 @@ const CustomerForm = () => {
   
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (isEditing) {
@@ -61,6 +62,7 @@ const CustomerForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
+    setError('');
     
     try {
       if (isEditing) {
@@ -71,6 +73,7 @@ const CustomerForm = () => {
       navigate('/customers');
     } catch (error) {
       console.error('Error saving customer:', error);
+      setError(error.response?.data?.message || 'Failed to save customer. Please check the details and try again.');
     } finally {
       setSaving(false);
     }
@@ -120,6 +123,13 @@ const CustomerForm = () => {
           </p>
         </div>
       </div>
+
+      {/* Error Message */}
+      {error && (
+        <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-md">
+          <p className="text-red-700">{error}</p>
+        </div>
+      )}
 
       {/* Form */}
       <form onSubmit={handleSubmit} className="card p-6 space-y-6">
