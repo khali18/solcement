@@ -397,6 +397,11 @@ const SaleForm = () => {
 
         {/* Actions */}
         <div className="flex items-center justify-end space-x-3">
+          {!formData.customer && (
+            <span className="text-sm text-red-500 mr-2">
+              * Please select a customer to create invoice
+            </span>
+          )}
           <button
             type="button"
             onClick={() => navigate('/sales')}
