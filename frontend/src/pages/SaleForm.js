@@ -133,7 +133,7 @@ const SaleForm = () => {
           unitPrice: item.unitPrice
         })),
         paymentMethod: formData.paymentMethod,
-        amountPaid: Number(formData.amountPaid),
+        amountPaid: formData.paymentMethod === 'credit' ? 0 : Number(formData.amountPaid),
         discount: Number(formData.discount),
         notes: formData.notes
       };

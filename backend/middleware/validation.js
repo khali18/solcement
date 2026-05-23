@@ -109,7 +109,12 @@ const saleValidation = {
   create: [
     body('customer')
       .notEmpty().withMessage('Customer is required')
-      .isMongoId().withMessage('Invalid customer ID'),
+      .custom(value => {
+        if (value === 'walk-in' || /^[0-9a-fA-F]{24}$/.test(value)) {
+          return true;
+        }
+        throw new Error('Invalid customer ID');
+      }),
     body('items')
       .isArray({ min: 1 }).withMessage('At least one item is required'),
     body('items.*.product')
