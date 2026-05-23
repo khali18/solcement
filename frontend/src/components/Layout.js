@@ -17,7 +17,8 @@ import {
   ChevronRight,
   Bell,
   Shield,
-  CreditCard
+  CreditCard,
+  Calculator
 } from 'lucide-react';
 
 const Layout = () => {
@@ -35,6 +36,7 @@ const Layout = () => {
     { name: 'Dashboard', href: '/', icon: LayoutDashboard },
     ...(hasRole(['admin', 'store_manager']) ? [{ name: 'Inventory', href: '/products', icon: Package }] : []),
     ...(hasRole(['admin', 'sales_staff']) ? [{ name: 'Sales', href: '/sales', icon: ShoppingCart }] : []),
+    { name: 'Estimate Calculator', href: '/estimate', icon: Calculator },
     { name: 'Customers', href: '/customers', icon: Users },
     ...(hasRole(['admin', 'store_manager']) ? [
       { name: 'Suppliers', href: '/suppliers', icon: Truck },

@@ -24,6 +24,7 @@ import UserForm from './pages/UserForm';
 import LoginAudits from './pages/LoginAudits';
 import Settings from './pages/Settings';
 import NotFound from './pages/NotFound';
+import EstimateCalculator from './pages/EstimateCalculator';
 
 // Protected Route component
 const ProtectedRoute = ({ children, roles }) => {
@@ -104,10 +105,11 @@ function App() {
           <Route path="products/new" element={<ProtectedRoute roles={['admin', 'store_manager']}><ProductForm /></ProtectedRoute>} />
           <Route path="products/:id/edit" element={<ProtectedRoute roles={['admin', 'store_manager']}><ProductForm /></ProtectedRoute>} />
           
-          {/* Sales */}
+          {/* Sales & Estimates */}
           <Route path="sales" element={<Sales />} />
           <Route path="sales/new" element={<SaleForm />} />
           <Route path="sales/:id" element={<SaleDetail />} />
+          <Route path="estimate" element={<EstimateCalculator />} />
           
           {/* Customers */}
           <Route path="customers" element={<Customers />} />
