@@ -187,6 +187,7 @@ const SaleForm = () => {
               required
             >
               <option value="">Choose a customer</option>
+              <option value="walk-in" className="font-semibold text-blue-600">Walk-In Customer</option>
               {customers.map((customer) => (
                 <option key={customer._id} value={customer._id}>
                   {customer.name} - {customer.phone}

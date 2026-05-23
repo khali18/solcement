@@ -113,10 +113,25 @@ const getSale = asyncHandler(async (req, res) => {
 const createSale = asyncHandler(async (req, res) => {
   const { customer, items, paymentMethod, amountPaid = 0, discount = 0, tax = 0, notes, deliveryAddress } = req.body;
 
-  // Validate customer exists
-  const customerDoc = await Customer.findById(customer);
-  if (!customerDoc) {
-    throw new AppError('Customer not found', 404);
+  let actualCustomerId = customer;
+  let customerDoc;
+
+  if (customer === 'walk-in') {
+    customerDoc = await Customer.findOne({ name: 'Walk-In Customer' });
+    if (!customerDoc) {
+      customerDoc = await Customer.create({
+        name: 'Walk-In Customer',
+        phone: '0000000000',
+        type: 'individual'
+      });
+    }
+    actualCustomerId = customerDoc._id;
+  } else {
+    // Validate customer exists
+    customerDoc = await Customer.findById(customer);
+    if (!customerDoc) {
+      throw new AppError('Customer not found', 404);
+    }
   }
 
   // Validate and process items
@@ -171,7 +186,7 @@ const createSale = asyncHandler(async (req, res) => {
   // Create sale
   const sale = await Sale.create({
     invoiceNumber,
-    customer,
+    customer: actualCustomerId,
     items: saleItems,
     subtotal,
     discount,
@@ -202,7 +217,7 @@ const createSale = asyncHandler(async (req, res) => {
   // If payment received, record it as a CustomerPayment
   if (amountPaid > 0) {
     await CustomerPayment.create({
-      customer,
+      customer: actualCustomerId,
       amount: amountPaid,
       paymentMethod,
       referenceNumber: invoiceNumber,
