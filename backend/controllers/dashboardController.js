@@ -56,6 +56,28 @@ const getDashboardStats = asyncHandler(async (req, res) => {
     }
   ]);
 
+  // Last month sales (for trend comparison)
+  const now = new Date();
+  const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59, 999);
+
+  const lastMonthlySales = await Sale.aggregate([
+    {
+      $match: {
+        createdAt: { $gte: startOfLastMonth, $lte: endOfLastMonth },
+        status: { $ne: 'cancelled' },
+        ...matchFilter
+      }
+    },
+    {
+      $group: {
+        _id: null,
+        count: { $sum: 1 },
+        revenue: { $sum: '$total' }
+      }
+    }
+  ]);
+
   // Inventory stats (Global - keep as is or filter? Usually inventory is global)
   const totalProducts = await Product.countDocuments({ isActive: true });
   const lowStockProducts = await Product.countDocuments({
@@ -138,6 +160,19 @@ const getDashboardStats = asyncHandler(async (req, res) => {
     $expr: { $lte: ['$quantity', '$minStockLevel'] }
   }).select('name quantity minStockLevel unit').limit(10);
 
+  // Compute trend percentage (current month vs last month)
+  const lastMonthRevenue = lastMonthlySales[0]?.revenue || 0;
+  const thisMonthRevenue = monthlySales[0]?.revenue || 0;
+  const revenueTrend = lastMonthRevenue === 0
+    ? (thisMonthRevenue > 0 ? 100 : 0)
+    : Math.round(((thisMonthRevenue - lastMonthRevenue) / lastMonthRevenue) * 100);
+
+  const lastMonthCount = lastMonthlySales[0]?.count || 0;
+  const thisMonthCount = monthlySales[0]?.count || 0;
+  const salesCountTrend = lastMonthCount === 0
+    ? (thisMonthCount > 0 ? 100 : 0)
+    : Math.round(((thisMonthCount - lastMonthCount) / lastMonthCount) * 100);
+
   res.json({
     success: true,
     data: {
@@ -149,7 +184,11 @@ const getDashboardStats = asyncHandler(async (req, res) => {
       monthly: {
         sales: monthlySales[0]?.count || 0,
         revenue: monthlySales[0]?.revenue || 0,
-        paid: monthlySales[0]?.paid || 0
+        paid: monthlySales[0]?.paid || 0,
+        revenueTrend,
+        salesCountTrend,
+        lastMonthRevenue,
+        lastMonthCount
       },
       inventory: {
         totalProducts,
