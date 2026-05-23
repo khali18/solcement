@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { apiHelpers } from '../utils/api';
 import { formatCurrency, getUnitLabel } from '../utils/formatters';
-import { Calculator, Plus, Trash2, Printer, ShoppingCart, Loader2 } from 'lucide-react';
+import { Calculator, Plus, Trash2, Printer, ShoppingCart, Loader2, Search, FileText } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const EstimateCalculator = () => {
@@ -59,6 +59,7 @@ const EstimateCalculator = () => {
     setSelectedProduct('');
     setProductSearch('');
     setQuantity(1);
+    toast.success('Item added to estimate');
   };
 
   const removeItem = (index) => {
@@ -81,7 +82,7 @@ const EstimateCalculator = () => {
 
   const calculateTotals = () => {
     const subtotal = items.reduce((sum, item) => sum + (item.quantity * item.unitPrice), 0);
-    const total = subtotal - discount;
+    const total = Math.max(0, subtotal - discount);
     return { subtotal, total };
   };
 
@@ -108,100 +109,102 @@ const EstimateCalculator = () => {
       {/* Non-printable Header */}
       <div className="print:hidden flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <Calculator className="w-6 h-6 text-emerald-600" />
+          <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+            <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
+              <Calculator className="w-5 h-5 text-emerald-600" />
+            </div>
             Estimate Calculator
           </h1>
-          <p className="text-gray-500 mt-1">Generate a quick price estimate without saving a sale.</p>
+          <p className="text-slate-500 mt-2 text-sm">Generate a quick price estimate without saving to the database.</p>
         </div>
         <button
           onClick={handlePrint}
-          className="btn-primary flex items-center shadow-lg hover:shadow-emerald-500/20"
+          className="btn-primary flex items-center shadow-lg shadow-blue-500/20"
         >
-          <Printer className="w-5 h-5 mr-2" />
-          Print Estimate
+          <Printer className="w-4 h-4 mr-2" />
+          Print Document
         </button>
       </div>
 
-      {/* Printable Estimate Document */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden print:shadow-none print:border-none print:m-0 print:p-0">
+      {/* Main Document Container */}
+      <div className="card print:border-none print:shadow-none print:m-0 print:p-0">
         
-        {/* Print Header (Visible only when printing or as part of the card) */}
-        <div className="p-8 border-b border-slate-200 bg-slate-50 print:bg-white print:border-b-2 print:border-slate-800">
+        {/* Printable Header */}
+        <div className="p-8 border-b border-slate-100 bg-slate-50/50 print:bg-white print:border-b-2 print:border-slate-800 print:pb-6">
           <div className="flex justify-between items-start">
             <div>
-              <div className="flex items-center space-x-2 mb-2">
-                <div className="w-10 h-10 rounded-lg bg-emerald-600 flex items-center justify-center print:border print:border-slate-300">
-                  <span className="text-white font-bold text-xl">S</span>
-                </div>
-                <h2 className="text-2xl font-bold text-slate-900 tracking-tight">SOL CEMENT</h2>
-              </div>
-              <p className="text-sm text-slate-500 font-medium">Build The Future</p>
-              <div className="mt-4 text-sm text-slate-600 space-y-1">
-                <p>123 Business Avenue</p>
-                <p>Accra, Ghana</p>
-                <p>Tel: +233 24 123 4567</p>
+              <img src="/logo-invoice.svg" alt="SOL CEMENT" className="h-12 mb-3" onError={(e) => { e.target.style.display='none'; }} />
+              <div>
+                <p className="text-lg font-bold text-slate-900">SOL CEMENT</p>
+                <p className="text-sm text-slate-500 font-medium">AMINU YAKUBU ENTERPRISE</p>
+                <p className="text-sm text-slate-500 mt-1">Tel: 024 370 1637 / 055 149 4769</p>
               </div>
             </div>
             <div className="text-right">
-              <h1 className="text-3xl font-bold text-slate-200 print:text-slate-800 uppercase tracking-widest mb-2">ESTIMATE</h1>
-              <p className="text-sm text-slate-500">Date: {new Date().toLocaleDateString()}</p>
-              <p className="text-sm text-slate-500">Valid for 7 days</p>
+              <h1 className="text-3xl font-black text-slate-200 print:text-slate-800 uppercase tracking-widest mb-2">ESTIMATE</h1>
+              <p className="text-sm font-medium text-slate-500">Date: {new Date().toLocaleDateString()}</p>
+              <p className="text-sm font-medium text-emerald-600 mt-1">Valid for 7 days</p>
             </div>
           </div>
 
-          <div className="mt-8 pt-8 border-t border-slate-200">
-            <label className="block text-sm font-medium text-slate-700 mb-1 print:hidden">
-              Customer Name (Optional)
-            </label>
-            <input
-              type="text"
-              placeholder="Enter customer name for the printout..."
-              value={customerName}
-              onChange={(e) => setCustomerName(e.target.value)}
-              className="input max-w-md print:hidden"
-            />
-            <div className="hidden print:block">
-              <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1">Prepared For:</h3>
-              <p className="text-lg font-medium text-slate-900">{customerName || 'Walk-In Customer'}</p>
+          <div className="mt-8 pt-6 border-t border-slate-100 print:border-slate-200">
+            <div className="max-w-md">
+              <div className="flex items-center gap-2 mb-2 print:hidden">
+                <FileText className="w-4 h-4 text-slate-400" />
+                <label className="text-sm font-semibold text-slate-700">Prepared For (Optional)</label>
+              </div>
+              <input
+                type="text"
+                placeholder="Enter customer name..."
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+                className="input print:hidden bg-white"
+              />
+              <div className="hidden print:block">
+                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Prepared For</h3>
+                <p className="text-lg font-bold text-slate-900">{customerName || 'Walk-In Customer'}</p>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Calculator Inputs (Hidden when printing) */}
-        <div className="p-6 bg-slate-50/50 border-b border-slate-100 print:hidden">
-          <div className="flex flex-col sm:flex-row gap-4 items-end">
-            <div className="flex-1 space-y-2 relative">
-              <label className="text-sm font-medium text-slate-700">Search Product</label>
-              <input
-                type="text"
-                placeholder="Type to filter..."
-                value={productSearch}
-                onChange={(e) => setProductSearch(e.target.value)}
-                className="input text-sm mb-2"
-              />
+        {/* Product Selector (Hidden when printing) */}
+        <div className="p-8 border-b border-slate-100 bg-white print:hidden">
+          <h3 className="text-sm font-semibold text-slate-800 mb-4">Add Items</h3>
+          <div className="flex flex-col md:flex-row gap-4 items-end">
+            <div className="flex-1 space-y-2 w-full">
+              <div className="relative">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Filter products..."
+                  value={productSearch}
+                  onChange={(e) => setProductSearch(e.target.value)}
+                  className="input pl-10 mb-3"
+                />
+              </div>
               <select
                 value={selectedProduct}
                 onChange={(e) => setSelectedProduct(e.target.value)}
-                className="input"
+                className="input bg-slate-50"
               >
-                <option value="">Select a product</option>
+                <option value="">Select a product from inventory</option>
                 {products
                   .filter(p => p.name.toLowerCase().includes(productSearch.toLowerCase()))
                   .map((product) => (
                   <option key={product._id} value={product._id}>
-                    {product.name} - {formatCurrency(product.sellingPrice)} 
+                    {product.name} — {formatCurrency(product.sellingPrice)} 
                   </option>
                 ))}
               </select>
             </div>
-            <div className="w-32 space-y-2">
+            <div className="w-full md:w-32 space-y-2">
               <label className="text-sm font-medium text-slate-700">Quantity</label>
               <input
                 type="number"
                 value={quantity}
                 onChange={(e) => setQuantity(Number(e.target.value))}
-                className="input"
+                className="input bg-slate-50"
                 min="1"
               />
             </div>
@@ -209,65 +212,68 @@ const EstimateCalculator = () => {
               type="button"
               onClick={addItem}
               disabled={!selectedProduct}
-              className="btn-primary h-[42px] px-6"
+              className="btn-secondary h-[42px] px-6 w-full md:w-auto flex-shrink-0"
             >
-              <Plus className="w-5 h-5 mr-1" /> Add
+              <Plus className="w-4 h-4 mr-1.5" /> Add Item
             </button>
           </div>
         </div>
 
-        {/* Estimate Items */}
-        <div className="p-6 print:p-8">
+        {/* Estimate Items Table */}
+        <div className="p-8">
           {items.length > 0 ? (
-            <div className="overflow-hidden rounded-xl border border-slate-200 print:border-none print:rounded-none">
+            <div className="overflow-hidden rounded-xl border border-slate-100 print:border-none print:rounded-none">
               <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-slate-50 border-b border-slate-200 print:bg-slate-100 print:border-slate-800">
-                    <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Item Description</th>
-                    <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-center">Qty</th>
-                    <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Unit Price</th>
-                    <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Total</th>
-                    <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-center print:hidden">Action</th>
+                <thead className="bg-slate-50">
+                  <tr className="border-b border-slate-100 print:border-slate-800">
+                    <th className="py-3.5 px-5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Product</th>
+                    <th className="py-3.5 px-5 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Qty</th>
+                    <th className="py-3.5 px-5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Unit Price</th>
+                    <th className="py-3.5 px-5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Total</th>
+                    <th className="py-3.5 px-5 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider print:hidden">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 print:divide-slate-200">
+                <tbody className="divide-y divide-slate-50 print:divide-slate-200">
                   {items.map((item, index) => (
                     <tr key={index} className="hover:bg-slate-50/50 transition-colors print:hover:bg-transparent">
-                      <td className="py-3 px-4">
-                        <p className="font-medium text-slate-900">{item.productName}</p>
-                        <p className="text-xs text-slate-500">{getUnitLabel(item.unit)}</p>
+                      <td className="py-4 px-5">
+                        <p className="font-semibold text-slate-900">{item.productName}</p>
+                        <p className="text-xs font-medium text-slate-400 mt-0.5">{getUnitLabel(item.unit)}</p>
                       </td>
-                      <td className="py-3 px-4 text-center">
-                        <input
-                          type="number"
-                          value={item.quantity}
-                          onChange={(e) => updateItemQuantity(index, Number(e.target.value))}
-                          className="w-16 text-center bg-transparent border border-slate-200 rounded px-2 py-1 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none print:hidden"
-                          min="1"
-                        />
-                        <span className="hidden print:inline">{item.quantity}</span>
+                      <td className="py-4 px-5 text-center">
+                        <div className="flex justify-center print:hidden">
+                          <input
+                            type="number"
+                            value={item.quantity}
+                            onChange={(e) => updateItemQuantity(index, Number(e.target.value))}
+                            className="w-20 text-center bg-white border border-slate-200 rounded-md px-2 py-1.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none shadow-sm"
+                            min="1"
+                          />
+                        </div>
+                        <span className="hidden print:inline font-medium text-slate-800">{item.quantity}</span>
                       </td>
-                      <td className="py-3 px-4 text-right">
-                        <div className="flex items-center justify-end gap-1 print:hidden">
-                          <span className="text-slate-400 text-sm">GH₵</span>
+                      <td className="py-4 px-5 text-right">
+                        <div className="flex items-center justify-end gap-1.5 print:hidden">
+                          <span className="text-slate-400 text-sm font-medium">GH₵</span>
                           <input
                             type="number"
                             value={item.unitPrice}
                             onChange={(e) => updateItemPrice(index, e.target.value)}
-                            className="w-24 text-right bg-transparent border border-slate-200 rounded px-2 py-1 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none"
+                            className="w-28 text-right bg-white border border-slate-200 rounded-md px-2 py-1.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none shadow-sm"
                             min="0"
                             step="0.01"
                           />
                         </div>
-                        <span className="hidden print:inline">{formatCurrency(item.unitPrice)}</span>
+                        <span className="hidden print:inline text-slate-700">{formatCurrency(item.unitPrice)}</span>
                       </td>
-                      <td className="py-3 px-4 text-right font-medium text-slate-900">
+                      <td className="py-4 px-5 text-right font-semibold text-slate-900">
                         {formatCurrency(item.quantity * item.unitPrice)}
                       </td>
-                      <td className="py-3 px-4 text-center print:hidden">
+                      <td className="py-4 px-5 text-center print:hidden">
                         <button
                           onClick={() => removeItem(index)}
-                          className="p-1.5 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"
+                          className="p-2 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"
+                          title="Remove item"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -278,10 +284,10 @@ const EstimateCalculator = () => {
               </table>
             </div>
           ) : (
-            <div className="text-center py-12 px-4 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50/50 print:hidden">
+            <div className="text-center py-16 px-4 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50 print:hidden">
               <ShoppingCart className="w-12 h-12 mx-auto mb-4 text-slate-300" />
-              <p className="text-slate-600 font-medium">No items added to the estimate yet</p>
-              <p className="text-sm text-slate-400 mt-1">Select a product and quantity to begin calculating</p>
+              <p className="text-slate-600 font-semibold text-lg">Your estimate is empty</p>
+              <p className="text-sm text-slate-400 mt-1">Search and add products above to start calculating</p>
             </div>
           )}
 
@@ -289,33 +295,36 @@ const EstimateCalculator = () => {
           {items.length > 0 && (
             <div className="mt-8 flex justify-end">
               <div className="w-full sm:w-80 space-y-3">
-                <div className="flex justify-between text-sm text-slate-600 px-4">
+                <div className="flex justify-between text-sm font-medium text-slate-600 px-4">
                   <span>Subtotal</span>
-                  <span className="font-medium">{formatCurrency(subtotal)}</span>
+                  <span className="text-slate-900">{formatCurrency(subtotal)}</span>
                 </div>
-                <div className="flex justify-between items-center text-sm text-slate-600 px-4 print:hidden">
+                
+                <div className="flex justify-between items-center text-sm font-medium text-slate-600 px-4 print:hidden">
                   <span>Discount</span>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1.5">
                     <span className="text-slate-400">GH₵</span>
                     <input
                       type="number"
                       value={discount}
                       onChange={(e) => setDiscount(Number(e.target.value))}
-                      className="w-24 text-right border border-slate-200 rounded px-2 py-1 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none"
+                      className="w-28 text-right bg-white border border-slate-200 rounded-md px-2 py-1.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none shadow-sm"
                       min="0"
                       step="0.01"
                     />
                   </div>
                 </div>
+
                 {discount > 0 && (
-                  <div className="hidden print:flex justify-between text-sm text-slate-600 px-4">
+                  <div className="hidden print:flex justify-between text-sm font-medium text-slate-600 px-4">
                     <span>Discount</span>
-                    <span className="font-medium text-rose-600">-{formatCurrency(discount)}</span>
+                    <span className="text-rose-600">-{formatCurrency(discount)}</span>
                   </div>
                 )}
-                <div className="flex justify-between items-center text-lg font-bold text-slate-900 p-4 bg-slate-50 rounded-xl border border-slate-100 print:bg-transparent print:border-none print:border-t-2 print:border-slate-800 print:rounded-none print:px-0">
+                
+                <div className="flex justify-between items-center text-lg font-bold text-slate-900 p-4 bg-slate-50 rounded-xl border border-slate-100 print:bg-transparent print:border-none print:border-t-2 print:border-slate-800 print:rounded-none print:px-0 mt-4">
                   <span>Estimated Total</span>
-                  <span className="text-emerald-600 print:text-slate-900">{formatCurrency(total)}</span>
+                  <span className="text-blue-600 print:text-slate-900">{formatCurrency(total)}</span>
                 </div>
               </div>
             </div>
@@ -323,8 +332,8 @@ const EstimateCalculator = () => {
 
           {/* Print Footer */}
           <div className="hidden print:block mt-16 pt-8 border-t border-slate-200 text-center text-sm text-slate-500">
-            <p className="mb-2">Thank you for choosing SOL CEMENT.</p>
-            <p>Note: This is an estimate, not a final invoice. Prices and availability are subject to change.</p>
+            <p className="font-semibold text-slate-700 mb-1">Thank you for considering SOL CEMENT.</p>
+            <p>Note: This is a price estimate only, not a formal invoice. Prices and availability are subject to change.</p>
           </div>
         </div>
       </div>
@@ -345,20 +354,20 @@ const EstimateCalculator = () => {
             display: inline !important;
           }
           .max-w-4xl {
-            max-w: none !important;
+            max-width: none !important;
             margin: 0 !important;
             padding: 0 !important;
           }
-          /* This selects the specific card containing our document */
-          .bg-white.rounded-xl.shadow-sm, 
-          .bg-white.rounded-xl.shadow-sm * {
-            visibility: visible;
-          }
-          .bg-white.rounded-xl.shadow-sm {
+          /* Card override for printing */
+          .card {
             position: absolute;
             left: 0;
             top: 0;
             width: 100%;
+            visibility: visible;
+          }
+          .card * {
+            visibility: visible;
           }
         }
       `}} />
